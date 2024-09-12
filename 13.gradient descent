@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Mean Squared Error function
+def mean_squared_error(y_true, y_predicted):
+    return np.sum((y_true - y_predicted) ** 2) / len(y_true)
+
+# Gradient Descent Function
+def gradient_descent(x, y, iterations=1000, learning_rate=0.0001, stopping_threshold=1e-6):
+    current_weight, current_bias = 0.1, 0.01
+    n = len(x)
+    costs, weights, previous_cost = [], [], None
+
+    for i in range(iterations):
+        y_predicted = current_weight * x + current_bias
+        current_cost = mean_squared_error(y, y_predicted)
+        
+        if previous_cost and abs(previous_cost - current_cost) <= stopping_threshold:
+            break
+        
+        previous_cost = current_cost
+        costs.append(current_cost)
+        weights.append(current_weight)
+        
+        # Calculate gradients
+        weight_derivative = -(2/n) * np.dot(x, (y - y_predicted))
+        bias_derivative = -(2/n) * np.sum(y - y_predicted)
+        
+        # Update parameters
+        current_weight -= learning_rate * weight_derivative
+        current_bias -= learning_rate * bias_derivative
+        
+        # Print every 1000 iterations
+        if i % 1000 == 0:
+            print(f"Iteration {i+1}: Cost {current_cost}, Weight {current_weight}, Bias {current_bias}")
+    
+    # Plot Cost vs Weights
+    plt.plot(weights, costs, 'r-o')
+    plt.title("Cost vs Weights")
+    plt.xlabel("Weight")
+    plt.ylabel("Cost")
+    plt.show()
+    
+    return current_weight, current_bias
+
+# Main function
+def main():
+    X = np.array([32.50, 53.42, 61.53, 47.47, 59.81, 55.14, 52.21, 39.29, 48.10, 52.55, 
+                  45.41
